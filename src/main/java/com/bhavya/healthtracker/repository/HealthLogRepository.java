@@ -4,5 +4,11 @@ import com.bhavya.healthtracker.entity.HealthLog;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface HealthLogRepository extends MongoRepository<HealthLog, ObjectId>{
+import java.util.List;
+
+public interface HealthLogRepository
+        extends MongoRepository<HealthLog, ObjectId> {
+
+    List<HealthLog> findByUserId(ObjectId userId);
+    HealthLog findById(String id);
 }

@@ -22,7 +22,6 @@ public class HealthLog {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed
     private ObjectId userId;
 
