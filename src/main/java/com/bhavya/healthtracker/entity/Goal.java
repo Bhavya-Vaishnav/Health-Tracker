@@ -1,5 +1,8 @@
 package com.bhavya.healthtracker.entity;
 
+import com.bhavya.healthtracker.enums.GoalStatus;
+import com.bhavya.healthtracker.enums.GoalType;
+import com.bhavya.healthtracker.enums.GoalUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,18 +25,17 @@ public class Goal {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed
     private ObjectId userId;
 
     @NonNull
-    private String goalType; // WEIGHT_LOSS, MUSCLE_GAIN, WATER, SLEEP
+    private GoalType goalType; // WEIGHT_LOSS, MUSCLE_GAIN, WATER, SLEEP
 
     private double targetValue;
     private double currentValue;
 
     @NonNull
-    private String unit; // kg, ml, hours, min
+    private GoalUnit unit; // kg, ml, hours, min
 
     @NonNull
     private LocalDate startDate;
@@ -41,5 +43,5 @@ public class Goal {
     @NonNull
     private LocalDate targetDate;
 
-    private String status;
+    private GoalStatus status;
 }

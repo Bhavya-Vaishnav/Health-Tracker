@@ -3,9 +3,12 @@ package com.bhavya.healthtracker.controller;
 import com.bhavya.healthtracker.dto.HealthLogResponseDTO;
 import com.bhavya.healthtracker.dto.UserResponseDTO;
 import com.bhavya.healthtracker.dto.UserUpdateDTO;
+import com.bhavya.healthtracker.dto.WeeklyInsightResponseDTO;
 import com.bhavya.healthtracker.entity.User;
+import com.bhavya.healthtracker.entity.WeeklyInsight;
 import com.bhavya.healthtracker.service.HealthLogService;
 import com.bhavya.healthtracker.service.UserService;
+import com.bhavya.healthtracker.service.WeeklyInsightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ public class UserController {
     private HealthLogService healthLogService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private WeeklyInsightService weeklyInsightService;
 
     @GetMapping("/profile")
     public ResponseEntity<UserResponseDTO> getUser() {
@@ -82,6 +87,13 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @GetMapping("/weekly-insight/current")
+    public ResponseEntity<?> getCurrentWeekInsight() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        WeeklyInsightResponseDTO dto = weeklyInsightService.generateCurrentWeekInsight(email);
+        return ResponseEntity.ok(dto);
     }
 
     private String getEmail() {

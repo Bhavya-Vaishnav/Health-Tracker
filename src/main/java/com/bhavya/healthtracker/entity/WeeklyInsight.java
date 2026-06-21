@@ -22,7 +22,6 @@ public class WeeklyInsight {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed
     private ObjectId userId;
 
@@ -35,6 +34,6 @@ public class WeeklyInsight {
 
     private double avgCalories;
     private int totalExerciseMinutes;
+    private double avgWaterMl;
     private double avgSleepHours;
-    private String summary;
 }
