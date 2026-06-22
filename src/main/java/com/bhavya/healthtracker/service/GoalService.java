@@ -43,7 +43,7 @@ public class GoalService {
                             .toList();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred during getting health logs:", e);
+            log.error("Error occurred during getting Goals:", e);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

@@ -20,7 +20,6 @@ public class NotificationPreference {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed(unique = true)
     private ObjectId userId;
 
@@ -28,5 +27,6 @@ public class NotificationPreference {
     private boolean reminderEmailEnabled;
 
     @NonNull
-    private String timezone; // Asia/Kolkata
+    @Builder.Default
+    private String timezone = "Asia/Kolkata";
 }

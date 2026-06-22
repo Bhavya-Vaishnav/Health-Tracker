@@ -1,5 +1,7 @@
 package com.bhavya.healthtracker.entity;
 
+import com.bhavya.healthtracker.enums.DayOfWeek;
+import com.bhavya.healthtracker.enums.ReminderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,12 +25,11 @@ public class Reminder {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed
     private ObjectId userId;
 
     @NonNull
-    private String type; // WATER, EXERCISE, SLEEP, LOG_ENTRY
+    private ReminderType type;
 
     @NonNull
     private String message;
@@ -36,7 +37,8 @@ public class Reminder {
     @NonNull
     private LocalTime reminderTime;
 
-    private List<String> daysOfWeek;
+    private List<DayOfWeek> daysOfWeek;
 
-    private boolean active;
+    @Builder.Default
+    private boolean active=true;
 }
