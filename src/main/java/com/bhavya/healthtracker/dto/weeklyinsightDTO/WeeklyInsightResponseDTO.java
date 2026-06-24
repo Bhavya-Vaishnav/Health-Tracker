@@ -1,4 +1,4 @@
-package com.bhavya.healthtracker.dto;
+package com.bhavya.healthtracker.dto.weeklyinsightDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

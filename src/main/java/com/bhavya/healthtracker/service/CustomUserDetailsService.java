@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.isEnabled(),
                 true, true, true,
                 user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
                         .collect(Collectors.toList())
 
         );

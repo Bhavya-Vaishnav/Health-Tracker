@@ -1,11 +1,12 @@
 package com.bhavya.healthtracker.controller;
 
-import com.bhavya.healthtracker.dto.LoginDTO;
-import com.bhavya.healthtracker.dto.UserRequestDTO;
+import com.bhavya.healthtracker.dto.userDTOs.LoginDTO;
+import com.bhavya.healthtracker.dto.userDTOs.UserRequestDTO;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.service.CustomUserDetailsService;
 import com.bhavya.healthtracker.service.UserService;
 import com.bhavya.healthtracker.utils.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -39,19 +39,13 @@ public class publicController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserRequestDTO userRequestDTO) {
-        try{
-            User newUser = new User();
-            newUser.setName(userRequestDTO.getName());
-            newUser.setPassword(userRequestDTO.getPassword());
-            newUser.setEmail(userRequestDTO.getEmail());
-            userService.saveNewUser(newUser);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            log.error("Error occur while creating new User:",e);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> signup(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        User newUser = new User();
+        newUser.setName(userRequestDTO.getName());
+        newUser.setPassword(userRequestDTO.getPassword());
+        newUser.setEmail(userRequestDTO.getEmail());
+        userService.saveNewUser(newUser);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

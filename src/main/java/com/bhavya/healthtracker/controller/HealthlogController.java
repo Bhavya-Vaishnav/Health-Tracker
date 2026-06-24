@@ -1,12 +1,12 @@
 package com.bhavya.healthtracker.controller;
 
-
-import com.bhavya.healthtracker.dto.HealthLogRequestDTO;
-import com.bhavya.healthtracker.dto.HealthLogResponseDTO;
-import com.bhavya.healthtracker.dto.HealthLogUpdateDTO;
+import com.bhavya.healthtracker.dto.healthlogDTOs.HealthLogRequestDTO;
+import com.bhavya.healthtracker.dto.healthlogDTOs.HealthLogResponseDTO;
+import com.bhavya.healthtracker.dto.healthlogDTOs.HealthLogUpdateDTO;
 import com.bhavya.healthtracker.service.HealthLogService;
-import com.bhavya.healthtracker.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,41 +19,40 @@ import java.util.List;
 public class HealthlogController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private HealthLogService healthLogService;
 
     @PostMapping
-    public ResponseEntity<?> createLog(@RequestBody HealthLogRequestDTO healthLogRequestDTO){
+    public ResponseEntity<HealthLogResponseDTO> createLog(@Valid @RequestBody HealthLogRequestDTO dto) {
         String email = getEmail();
-        return healthLogService.createLog(healthLogRequestDTO,email);
+        return ResponseEntity.status(HttpStatus.CREATED).body(healthLogService.createLog(dto, email));
     }
 
     @GetMapping
-    public ResponseEntity<List<HealthLogResponseDTO>> getAllLogs(){
+    public ResponseEntity<List<HealthLogResponseDTO>> getAllLogs() {
         String email = getEmail();
-        return healthLogService.getAllLogs(email);
+        return ResponseEntity.ok(healthLogService.getAllLogs(email));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HealthLogResponseDTO> getLogById(@PathVariable String id){
+    public ResponseEntity<HealthLogResponseDTO> getLogById(@PathVariable String id) {
         String email = getEmail();
-        return healthLogService.getLogById(email,id);
+        return ResponseEntity.ok(healthLogService.getLogById(email, id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HealthLogResponseDTO> updateById(@RequestBody HealthLogUpdateDTO dto, @PathVariable String id){
+    public ResponseEntity<HealthLogResponseDTO> updateById(@RequestBody HealthLogUpdateDTO dto, @PathVariable String id) {
         String email = getEmail();
-        return healthLogService.updateById(dto,email,id);
+        return ResponseEntity.ok(healthLogService.updateById(dto, email, id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HealthLogResponseDTO> deleteById( @PathVariable String id){
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
         String email = getEmail();
-        return healthLogService.deleteById(email,id);
+        healthLogService.deleteById(email, id);
+        return ResponseEntity.noContent().build();
     }
 
-    private String getEmail(){
+    private String getEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }

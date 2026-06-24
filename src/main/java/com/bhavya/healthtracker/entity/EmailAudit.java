@@ -1,5 +1,7 @@
 package com.bhavya.healthtracker.entity;
 
+import com.bhavya.healthtracker.enums.EmailStatus;
+import com.bhavya.healthtracker.enums.EmailType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,21 +24,22 @@ public class EmailAudit {
     @Id
     private ObjectId id;
 
-    @NonNull
     @Indexed
     private ObjectId userId;
 
     @NonNull
-    private String email;
+    private String toEmail;
+
+    @NonNull
+    private EmailType emailType;
 
     @NonNull
     private String subject;
 
-    @NonNull
-    private String status; // SENT, FAILED
+    private EmailStatus status;
 
     private String errorMessage;
 
-    @NonNull
+    @Indexed
     private LocalDateTime sentAt;
 }

@@ -1,9 +1,12 @@
 package com.bhavya.healthtracker.controller;
 
-
-import com.bhavya.healthtracker.dto.*;
+import com.bhavya.healthtracker.dto.goalDTOs.GoalRequestDTO;
+import com.bhavya.healthtracker.dto.goalDTOs.GoalResponseDTO;
+import com.bhavya.healthtracker.dto.goalDTOs.GoalUpdateDTO;
 import com.bhavya.healthtracker.service.GoalService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,36 +22,37 @@ public class GoalController {
     private GoalService goalService;
 
     @PostMapping
-    public ResponseEntity<?> createLog(@RequestBody GoalRequestDTO goalRequestDTO){
+    public ResponseEntity<GoalResponseDTO> createGoal(@Valid @RequestBody GoalRequestDTO dto) {
         String email = getEmail();
-        return goalService.createGoal(goalRequestDTO,email);
+        return ResponseEntity.status(HttpStatus.CREATED).body(goalService.createGoal(dto, email));
     }
 
     @GetMapping
-    public ResponseEntity<List<GoalResponseDTO>> getAllLogs(){
+    public ResponseEntity<List<GoalResponseDTO>> getAllGoals() {
         String email = getEmail();
-        return goalService.getAllLogs(email);
+        return ResponseEntity.ok(goalService.getAllGoals(email));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GoalResponseDTO> getLogById(@PathVariable String id){
+    public ResponseEntity<GoalResponseDTO> getGoalById(@PathVariable String id) {
         String email = getEmail();
-        return goalService.getLogById(email,id);
+        return ResponseEntity.ok(goalService.getGoalById(email, id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GoalResponseDTO> updateById(@RequestBody GoalUpdateDTO dto, @PathVariable String id){
+    public ResponseEntity<GoalResponseDTO> updateById(@RequestBody GoalUpdateDTO dto, @PathVariable String id) {
         String email = getEmail();
-        return goalService.updateById(dto,email,id);
+        return ResponseEntity.ok(goalService.updateById(dto, email, id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<GoalResponseDTO> deleteById( @PathVariable String id){
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
         String email = getEmail();
-        return goalService.deleteById(email,id);
+        goalService.deleteById(email, id);
+        return ResponseEntity.noContent().build();
     }
 
-    private String getEmail(){
+    private String getEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }

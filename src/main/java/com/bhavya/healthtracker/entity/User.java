@@ -1,6 +1,7 @@
 package com.bhavya.healthtracker.entity;
 
 
+import com.bhavya.healthtracker.enums.UserRoles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class User {
     @NonNull
     private String password;
 
-    private List<String> roles;
+    private List<UserRoles> roles;
 
     private boolean enabled;
 }

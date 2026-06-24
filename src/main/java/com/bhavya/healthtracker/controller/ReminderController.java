@@ -1,9 +1,12 @@
 package com.bhavya.healthtracker.controller;
 
-import com.bhavya.healthtracker.dto.*;
-import com.bhavya.healthtracker.entity.Reminder;
+import com.bhavya.healthtracker.dto.reminderDTOs.ReminderRequestDTO;
+import com.bhavya.healthtracker.dto.reminderDTOs.ReminderResponseDTO;
+import com.bhavya.healthtracker.dto.reminderDTOs.ReminderUpdateDTO;
 import com.bhavya.healthtracker.service.ReminderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,36 +22,37 @@ public class ReminderController {
     private ReminderService reminderService;
 
     @PostMapping
-    public ResponseEntity<?> createLog(@RequestBody ReminderRequestDTO reminderRequestDTO){
+    public ResponseEntity<ReminderResponseDTO> createReminder(@Valid @RequestBody ReminderRequestDTO dto) {
         String email = getEmail();
-        return reminderService.createReminder(reminderRequestDTO,email);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reminderService.createReminder(dto, email));
     }
 
     @GetMapping
-    public ResponseEntity<List<ReminderResponseDTO>> getAllReminders(){
+    public ResponseEntity<List<ReminderResponseDTO>> getAllReminders() {
         String email = getEmail();
-        return reminderService.getAllLogs(email);
+        return ResponseEntity.ok(reminderService.getAllReminders(email));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReminderResponseDTO> getReminderById(@PathVariable String id){
+    public ResponseEntity<ReminderResponseDTO> getReminderById(@PathVariable String id) {
         String email = getEmail();
-        return reminderService.getLogById(email,id);
+        return ResponseEntity.ok(reminderService.getReminderById(email, id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReminderResponseDTO> updateById(@RequestBody ReminderUpdateDTO dto, @PathVariable String id){
+    public ResponseEntity<ReminderResponseDTO> updateById(@RequestBody ReminderUpdateDTO dto, @PathVariable String id) {
         String email = getEmail();
-        return reminderService.updateById(dto,email,id);
+        return ResponseEntity.ok(reminderService.updateById(dto, email, id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ReminderResponseDTO> deleteById( @PathVariable String id){
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
         String email = getEmail();
-        return reminderService.deleteById(email,id);
+        reminderService.deleteById(email, id);
+        return ResponseEntity.noContent().build();
     }
 
-    private String getEmail(){
+    private String getEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }

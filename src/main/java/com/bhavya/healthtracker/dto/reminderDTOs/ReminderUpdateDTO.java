@@ -1,4 +1,4 @@
-package com.bhavya.healthtracker.dto;
+package com.bhavya.healthtracker.dto.reminderDTOs;
 
 import com.bhavya.healthtracker.enums.DayOfWeek;
 import com.bhavya.healthtracker.enums.ReminderType;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReminderRequestDTO {
+public class ReminderUpdateDTO {
 
     private ReminderType type;
 
@@ -21,4 +21,6 @@ public class ReminderRequestDTO {
     private LocalTime reminderTime;
 
     private List<DayOfWeek> daysOfWeek;
+
+    private Boolean active;
 }

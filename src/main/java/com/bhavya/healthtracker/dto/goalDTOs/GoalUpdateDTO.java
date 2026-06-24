@@ -1,4 +1,4 @@
-package com.bhavya.healthtracker.dto;
+package com.bhavya.healthtracker.dto.goalDTOs;
 
 import com.bhavya.healthtracker.enums.GoalStatus;
 import com.bhavya.healthtracker.enums.GoalType;
@@ -12,18 +12,19 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoalRequestDTO {
+public class GoalUpdateDTO {
 
     private GoalType goalType;
 
-    private double targetValue;
+    private Double targetValue;
 
-    private double currentValue;
+    private Double currentValue;
 
     private GoalUnit unit;
 
     private LocalDate startDate;
 
     private LocalDate targetDate;
+
     private GoalStatus status;
 }

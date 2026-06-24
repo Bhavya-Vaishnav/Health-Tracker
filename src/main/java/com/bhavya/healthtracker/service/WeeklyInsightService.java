@@ -1,6 +1,6 @@
 package com.bhavya.healthtracker.service;
 
-import com.bhavya.healthtracker.dto.WeeklyInsightResponseDTO;
+import com.bhavya.healthtracker.dto.weeklyinsightDTO.WeeklyInsightResponseDTO;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.entity.WeeklyInsight;
 import com.bhavya.healthtracker.repository.UserRepository;
@@ -25,12 +25,12 @@ public class WeeklyInsightService {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     @Autowired
     private WeeklyInsightRepository weeklyInsightRepository;
 
     public WeeklyInsightResponseDTO generateCurrentWeekInsight(String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userService.findByEmail(email);
         ObjectId userId = user.getId();
 
         LocalDate today = LocalDate.now();
@@ -58,21 +58,25 @@ public class WeeklyInsightService {
         }
 
         double avgCal = doc.getDouble("avgCalories");
-        int totalEx = doc.getInteger("totalExercise");
+        int totalEx = doc.get("totalExercise", Number.class).intValue();
         double avgSleep = doc.getDouble("avgSleep");
         double avgWater=doc.getDouble("avgWaterMl");
-        WeeklyInsight weeklyInsight = WeeklyInsight.builder().userId(userId).weekStartDate(weekStart).weekEndDate(weekEnd).avgCalories(avgCal).avgWaterMl(avgWater).avgSleepHours(avgSleep).build();
+
+        WeeklyInsight existing = weeklyInsightRepository
+                .findByUserIdAndWeekStartDate(userId, weekStart)
+                .orElse(null);
+
+        WeeklyInsight weeklyInsight = (existing != null) ? existing : new WeeklyInsight();
+        weeklyInsight.setUserId(userId);
+        weeklyInsight.setWeekStartDate(weekStart);
+        weeklyInsight.setWeekEndDate(weekEnd);
+        weeklyInsight.setAvgCalories(avgCal);
+        weeklyInsight.setTotalExerciseMinutes(totalEx);
+        weeklyInsight.setAvgWaterMl(avgWater);
+        weeklyInsight.setAvgSleepHours(avgSleep);
+
         weeklyInsightRepository.save(weeklyInsight);
         return new WeeklyInsightResponseDTO(weekStart, weekEnd, avgCal, totalEx,avgWater, avgSleep);
-    }
-
-    @Scheduled(cron = "0 0 23 * * SUN")
-    public void generateWeeklyInsightsForAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        for (User user : allUsers) {
-            WeeklyInsightResponseDTO dto = generateCurrentWeekInsight(user.getEmail());
-            // convert dto → entity → save to weekly_insights collection
-        }
     }
 
 }

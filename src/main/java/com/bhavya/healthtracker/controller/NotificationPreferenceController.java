@@ -1,8 +1,7 @@
 package com.bhavya.healthtracker.controller;
 
-import com.bhavya.healthtracker.dto.NotificationPreferenceResponseDTO;
-import com.bhavya.healthtracker.dto.NotificationPreferenceUpdateDTO;
-import com.bhavya.healthtracker.entity.NotificationPreference;
+import com.bhavya.healthtracker.dto.notificationpreferenceDTOs.NotificationPreferenceResponseDTO;
+import com.bhavya.healthtracker.dto.notificationpreferenceDTOs.NotificationPreferenceUpdateDTO;
 import com.bhavya.healthtracker.service.NotificationPreferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +17,18 @@ public class NotificationPreferenceController {
     private NotificationPreferenceService notificationPreferenceService;
 
     @GetMapping
-    public ResponseEntity<NotificationPreferenceResponseDTO> getOrcreate(){
+    public ResponseEntity<NotificationPreferenceResponseDTO> getOrCreate() {
         String email = getEmail();
-        return notificationPreferenceService.getOrCreate(email);
+        return ResponseEntity.ok(notificationPreferenceService.getOrCreate(email));
     }
 
-    @PostMapping
-    public ResponseEntity<NotificationPreferenceResponseDTO> togglePreference(@RequestBody NotificationPreferenceUpdateDTO dto){
+    @PutMapping
+    public ResponseEntity<NotificationPreferenceResponseDTO> togglePreference(@RequestBody NotificationPreferenceUpdateDTO dto) {
         String email = getEmail();
-        return notificationPreferenceService.togglePreference(email,dto);
+        return ResponseEntity.ok(notificationPreferenceService.togglePreference(email, dto));
     }
 
-    private String getEmail(){
+    private String getEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
