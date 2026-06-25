@@ -13,6 +13,10 @@ import com.mongodb.DuplicateKeyException;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +34,15 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CacheManager cacheManager;
 
+
+    @Cacheable(value = "userProfile", key = "#email")
     public UserResponseDTO getUser(String email) {
         User user = findByEmail(email);
         return toDto(user);
     }
-
 
     public User saveNewUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,6 +64,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "userProfile", key = "#email")
     public UserResponseDTO updateUser(String email, UserUpdateDTO dto) {
         User userInDb = findByEmail(email);
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
@@ -69,6 +77,7 @@ public class UserService {
         return toDto(userInDb);
     }
 
+    @CacheEvict(value = "userProfile", key = "#email")
     public void deleteUser(String email, Map<String, String> payload) {
         String rawPassword = payload.get("password");
         if (rawPassword == null || rawPassword.isEmpty()) {
@@ -103,6 +112,7 @@ public class UserService {
         }
         user.setEnabled(false);
         userRepository.save(user);
+        evictUserProfileCache(user.getEmail());
     }
 
     public void deleteUserAdmin(String id) {
@@ -111,6 +121,7 @@ public class UserService {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
         userRepository.delete(user);
+        evictUserProfileCache(user.getEmail());
     }
 
     private UserResponseDTO toDto(User user) {
@@ -120,5 +131,12 @@ public class UserService {
                 .roles(user.getRoles())
                 .enable(user.isEnabled())
                 .build();
+    }
+
+    private void evictUserProfileCache(String email) {
+        Cache cache = cacheManager.getCache("userProfile");
+        if (cache != null) {
+            cache.evict(email);
+        }
     }
 }

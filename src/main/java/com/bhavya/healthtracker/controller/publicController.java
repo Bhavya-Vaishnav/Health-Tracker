@@ -3,6 +3,7 @@ package com.bhavya.healthtracker.controller;
 import com.bhavya.healthtracker.dto.userDTOs.LoginDTO;
 import com.bhavya.healthtracker.dto.userDTOs.UserRequestDTO;
 import com.bhavya.healthtracker.entity.User;
+import com.bhavya.healthtracker.repository.UserRepository;
 import com.bhavya.healthtracker.service.CustomUserDetailsService;
 import com.bhavya.healthtracker.service.UserService;
 import com.bhavya.healthtracker.utils.JwtUtil;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class publicController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/health-check")
     public ResponseEntity<?> healthCheck() {

@@ -8,6 +8,7 @@ import com.bhavya.healthtracker.repository.WeeklyInsightRepository;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -29,6 +30,7 @@ public class WeeklyInsightService {
     @Autowired
     private WeeklyInsightRepository weeklyInsightRepository;
 
+    @Cacheable(value = "weeklyInsight", key = "#email")
     public WeeklyInsightResponseDTO generateCurrentWeekInsight(String email) {
         User user = userService.findByEmail(email);
         ObjectId userId = user.getId();

@@ -12,6 +12,7 @@ import com.bhavya.healthtracker.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class HealthLogService {
     @Autowired
     private HealthLogRepository healthLogRepository;
 
+    @CacheEvict(value = "weeklyInsight", key = "#email")
     public HealthLogResponseDTO createLog(HealthLogRequestDTO dto, String email) {
         User user = getCurrentUser(email);
         HealthLog healthLog = HealthLog.builder()
@@ -58,6 +60,7 @@ public class HealthLogService {
         return toDto(healthlog);
     }
 
+    @CacheEvict(value = "weeklyInsight", key = "#email")
     public HealthLogResponseDTO updateById(HealthLogUpdateDTO dto, String email, String id) {
         User user = getCurrentUser(email);
         HealthLog healthlog = healthLogRepository.findById(new ObjectId(id))
@@ -76,6 +79,7 @@ public class HealthLogService {
         return toDto(healthlog);
     }
 
+    @CacheEvict(value = "weeklyInsight", key = "#email")
     public void deleteById(String email, String id) {
         User user = getCurrentUser(email);
         HealthLog healthlog = healthLogRepository.findById(new ObjectId(id))
