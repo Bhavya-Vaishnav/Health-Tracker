@@ -27,8 +27,6 @@ public class SpringSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request -> request
-                        // TEMPORARY CHANGE: Allow all DELETE requests to /user/delete
-                        .requestMatchers(HttpMethod.DELETE, "/user/delete").permitAll()
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
