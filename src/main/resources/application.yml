@@ -22,6 +22,8 @@ spring:
           auth: true
           starttls:
             enable: true
+  main:
+    lazy-initialization: true
 
 server:
   port: ${PORT:8080}
@@ -35,7 +37,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics
+        include: health,info,prometheus,metrics,startup
 
   endpoint:
     health:
