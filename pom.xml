@@ -146,10 +146,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <source>24</source>
-                    <target>24</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
