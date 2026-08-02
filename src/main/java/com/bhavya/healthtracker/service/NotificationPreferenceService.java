@@ -5,18 +5,17 @@ import com.bhavya.healthtracker.dto.notificationpreferenceDTOs.NotificationPrefe
 import com.bhavya.healthtracker.entity.NotificationPreference;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.repository.NotificationPreferenceRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class NotificationPreferenceService {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private NotificationPreferenceRepository notificationPreferenceRepository;
+    private final UserService userService;
+    private final NotificationPreferenceRepository notificationPreferenceRepository;
 
     private NotificationPreference getOrCreatePreference(String email) {
         User user = getCurrentUser(email);

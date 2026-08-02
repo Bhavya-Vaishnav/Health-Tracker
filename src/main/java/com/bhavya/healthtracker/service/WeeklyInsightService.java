@@ -3,32 +3,27 @@ package com.bhavya.healthtracker.service;
 import com.bhavya.healthtracker.dto.weeklyinsightDTO.WeeklyInsightResponseDTO;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.entity.WeeklyInsight;
-import com.bhavya.healthtracker.repository.UserRepository;
 import com.bhavya.healthtracker.repository.WeeklyInsightRepository;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WeeklyInsightService {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private WeeklyInsightRepository weeklyInsightRepository;
+    private final MongoTemplate mongoTemplate;
+    private final UserService userService;
+    private final WeeklyInsightRepository weeklyInsightRepository;
 
     @Cacheable(value = "weeklyInsight", key = "#email")
     public WeeklyInsightResponseDTO generateCurrentWeekInsight(String email) {

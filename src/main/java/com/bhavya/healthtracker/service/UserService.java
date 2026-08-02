@@ -1,42 +1,44 @@
 package com.bhavya.healthtracker.service;
 
-
+import com.bhavya.healthtracker.dto.userDTOs.LoginDTO;
+import com.bhavya.healthtracker.dto.userDTOs.UserRequestDTO;
 import com.bhavya.healthtracker.dto.userDTOs.UserResponseDTO;
 import com.bhavya.healthtracker.dto.userDTOs.UserUpdateDTO;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.enums.UserRoles;
-import com.bhavya.healthtracker.exception.EmailAlreadyExistsException;
 import com.bhavya.healthtracker.exception.ResourceNotFoundException;
 import com.bhavya.healthtracker.exception.UnauthorizedAccessException;
 import com.bhavya.healthtracker.repository.UserRepository;
-import com.mongodb.DuplicateKeyException;
-import lombok.extern.slf4j.Slf4j;
+import com.bhavya.healthtracker.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.bhavya.healthtracker.enums.UserRoles.ROLE_USER;
+
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private CacheManager cacheManager;
-
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CacheManager cacheManager;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     @Cacheable(value = "userProfile", key = "#email")
     public UserResponseDTO getUser(String email) {
@@ -44,15 +46,36 @@ public class UserService {
         return toDto(user);
     }
 
-    public User saveNewUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singletonList(UserRoles.ROLE_USER));
+    public UserResponseDTO saveNewUser(UserRequestDTO dto) {
+        User user = new User();
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
         user.setEnabled(true);
-        try {
-            return userRepository.save(user);
-        } catch (DuplicateKeyException e) {
-            throw new EmailAlreadyExistsException("Email already registered: " + user.getEmail());
-        }
+        user.setRoles(List.of(ROLE_USER));
+
+        userRepository.save(user);
+        return toDto(user);
+    }
+
+    public String authenticate(LoginDTO loginDTO) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(),
+                        loginDTO.getPassword()
+                )
+        );
+
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(loginDTO.getEmail());
+
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        return jwtUtil.generateToken(userDetails.getUsername(), roles);
     }
 
     public User findByEmail(String email) {

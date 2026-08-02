@@ -8,21 +8,20 @@ import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.exception.ResourceNotFoundException;
 import com.bhavya.healthtracker.exception.UnauthorizedAccessException;
 import com.bhavya.healthtracker.repository.GoalRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class GoalService {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private GoalRepository goalRepository;
+    private final UserService userService;
+    private final GoalRepository goalRepository;
 
     public GoalResponseDTO createGoal(GoalRequestDTO dto, String email) {
         User user = getCurrentUser(email);

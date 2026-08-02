@@ -8,25 +8,21 @@ import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.exception.ResourceNotFoundException;
 import com.bhavya.healthtracker.exception.UnauthorizedAccessException;
 import com.bhavya.healthtracker.repository.HealthLogRepository;
-import com.bhavya.healthtracker.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class HealthLogService {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private HealthLogRepository healthLogRepository;
+    private final UserService userService;
+    private final HealthLogRepository healthLogRepository;
 
     @CacheEvict(value = "weeklyInsight", key = "#email")
     public HealthLogResponseDTO createLog(HealthLogRequestDTO dto, String email) {

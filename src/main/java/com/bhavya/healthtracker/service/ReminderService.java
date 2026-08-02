@@ -8,21 +8,20 @@ import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.exception.ResourceNotFoundException;
 import com.bhavya.healthtracker.exception.UnauthorizedAccessException;
 import com.bhavya.healthtracker.repository.ReminderRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ReminderService {
 
-    @Autowired
-    private ReminderRepository reminderRepository;
-    @Autowired
-    private UserService userService;
+    private final ReminderRepository reminderRepository;
+    private final UserService userService;
 
     public ReminderResponseDTO createReminder(ReminderRequestDTO dto, String email) {
         User user = getCurrentUser(email);

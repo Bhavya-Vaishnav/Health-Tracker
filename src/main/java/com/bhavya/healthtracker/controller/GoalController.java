@@ -5,7 +5,7 @@ import com.bhavya.healthtracker.dto.goalDTOs.GoalResponseDTO;
 import com.bhavya.healthtracker.dto.goalDTOs.GoalUpdateDTO;
 import com.bhavya.healthtracker.service.GoalService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user/goals")
 public class GoalController {
 
-    @Autowired
-    private GoalService goalService;
+    private final GoalService goalService;
 
     @PostMapping
     public ResponseEntity<GoalResponseDTO> createGoal(@Valid @RequestBody GoalRequestDTO dto) {

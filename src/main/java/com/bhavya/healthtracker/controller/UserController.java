@@ -5,7 +5,7 @@ import com.bhavya.healthtracker.dto.userDTOs.UserUpdateDTO;
 import com.bhavya.healthtracker.dto.weeklyinsightDTO.WeeklyInsightResponseDTO;
 import com.bhavya.healthtracker.service.UserService;
 import com.bhavya.healthtracker.service.WeeklyInsightService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private WeeklyInsightService weeklyInsightService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final WeeklyInsightService weeklyInsightService;
 
     @GetMapping("/profile")
     public UserResponseDTO getUser() {

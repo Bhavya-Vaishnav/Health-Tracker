@@ -24,6 +24,7 @@ spring:
             enable: true
   main:
     lazy-initialization: true
+#  This Reduces the startup time of the application from 202 to 58.4 sec.
 
 server:
   port: ${PORT:8080}

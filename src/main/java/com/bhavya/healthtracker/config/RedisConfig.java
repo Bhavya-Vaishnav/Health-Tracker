@@ -28,7 +28,7 @@ public class RedisConfig {
                 typeValidator,
                 ObjectMapper.DefaultTyping.NON_FINAL,
                 JsonTypeInfo.As.PROPERTY
-        ); // ← this line was missing, embeds @class info for correct deserialization
+        );
 
         GenericJackson2JsonRedisSerializer serializer =
                 new GenericJackson2JsonRedisSerializer(objectMapper);

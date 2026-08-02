@@ -5,7 +5,7 @@ import com.bhavya.healthtracker.dto.reminderDTOs.ReminderResponseDTO;
 import com.bhavya.healthtracker.dto.reminderDTOs.ReminderUpdateDTO;
 import com.bhavya.healthtracker.service.ReminderService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user/reminder")
 public class ReminderController {
 
-    @Autowired
-    private ReminderService reminderService;
+    private final ReminderService reminderService;
 
     @PostMapping
     public ResponseEntity<ReminderResponseDTO> createReminder(@Valid @RequestBody ReminderRequestDTO dto) {

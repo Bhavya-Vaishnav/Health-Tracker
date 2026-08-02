@@ -11,9 +11,9 @@ import com.bhavya.healthtracker.enums.EmailType;
 import com.bhavya.healthtracker.repository.EmailAuditRepository;
 import com.bhavya.healthtracker.repository.ReminderRepository;
 import com.bhavya.healthtracker.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,23 +30,17 @@ import static com.bhavya.healthtracker.enums.GoalStatus.COMPLETED;
 import static com.bhavya.healthtracker.enums.GoalStatus.IN_PROGRESS;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private NotificationPreferenceService notificationPreferenceService;
-    @Autowired
-    private WeeklyInsightService weeklyInsightService;
-    @Autowired
-    private ReminderRepository reminderRepository;
-    @Autowired
-    private GoalService goalService;
-    @Autowired
-    private EmailAuditRepository emailAuditRepository;
+    private final  JavaMailSender javaMailSender;
+    private final  UserRepository userRepository;
+    private final  NotificationPreferenceService notificationPreferenceService;
+    private final  WeeklyInsightService weeklyInsightService;
+    private final  ReminderRepository reminderRepository;
+    private final  GoalService goalService;
+    private final  EmailAuditRepository emailAuditRepository;
 
     public boolean sendEmail(String to, String subject, String body, ObjectId userId, EmailType emailType) {
         EmailAudit audit = EmailAudit.builder()

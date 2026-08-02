@@ -3,18 +3,18 @@ package com.bhavya.healthtracker.controller;
 import com.bhavya.healthtracker.dto.notificationpreferenceDTOs.NotificationPreferenceResponseDTO;
 import com.bhavya.healthtracker.dto.notificationpreferenceDTOs.NotificationPreferenceUpdateDTO;
 import com.bhavya.healthtracker.service.NotificationPreferenceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user/notification-preference")
 public class NotificationPreferenceController {
 
-    @Autowired
-    private NotificationPreferenceService notificationPreferenceService;
+    private final NotificationPreferenceService notificationPreferenceService;
 
     @GetMapping
     public ResponseEntity<NotificationPreferenceResponseDTO> getOrCreate() {
