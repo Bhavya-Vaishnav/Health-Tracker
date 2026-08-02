@@ -65,9 +65,9 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.builder().message("Validation failed").errors(errors).build());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.builder().message("Something went wrong").build());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ErrorResponse.builder().message("Something went wrong").build());
+//    }
 }

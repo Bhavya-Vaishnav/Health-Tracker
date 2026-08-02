@@ -6,6 +6,7 @@ import com.bhavya.healthtracker.dto.userDTOs.UserResponseDTO;
 import com.bhavya.healthtracker.dto.userDTOs.UserUpdateDTO;
 import com.bhavya.healthtracker.entity.User;
 import com.bhavya.healthtracker.enums.UserRoles;
+import com.bhavya.healthtracker.exception.EmailAlreadyExistsException;
 import com.bhavya.healthtracker.exception.ResourceNotFoundException;
 import com.bhavya.healthtracker.exception.UnauthorizedAccessException;
 import com.bhavya.healthtracker.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -47,15 +50,24 @@ public class UserService {
     }
 
     public UserResponseDTO saveNewUser(UserRequestDTO dto) {
-        User user = new User();
+
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new EmailAlreadyExistsException(
+                    "Email already registered: " + dto.getEmail());
+        }
+
+        User user=new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRoles(Collections.singletonList(UserRoles.ROLE_USER));
         user.setEnabled(true);
-        user.setRoles(List.of(ROLE_USER));
-
-        userRepository.save(user);
-        return toDto(user);
+        try {
+            return toDto(userRepository.save(user));
+        } catch (DuplicateKeyException e) {
+            throw new EmailAlreadyExistsException(
+                    "Email already registered: " + user.getEmail());
+        }
     }
 
     public String authenticate(LoginDTO loginDTO) {
